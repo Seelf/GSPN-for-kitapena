@@ -1,0 +1,15 @@
+# Logs
+*.log
+build_out*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Other
+sieci\ copy/
