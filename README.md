@@ -1,23 +1,23 @@
 # GreatSPN for Kitapena
 
-To repozytorium zawiera kompletny `Dockerfile` (oraz towarzyszące pliki konfiguracyjne), służący do budowy obrazu bazowego dla aplikacji **Kitapena**. Obraz ten zawiera w pełni skompilowane, niezależne środowisko analityczne **GreatSPN** (szczególnie narzędzia C++ takie jak `DSPN-Tool` dla ciągłych łańcuchów Markowa). 
+This repository contains a complete `Dockerfile` used to build the base image for the **Kitapena** application. This image contains a fully compiled, standalone **GreatSPN** analytical environment (in particular, C++ tools like `DSPN-Tool` for Continuous-Time Markov Chains).
 
-## Wykorzystanie
+## Usage
 
-Obraz ten jest bazą, od której dziedziczą kolejne warstwy środowiska (np. backend, celery). Obraz jest obsługiwany przez **Python 3.9** w minimalnej wersji debiana (`bullseye-slim`).
+This image serves as the base layer from which subsequent environment layers (e.g., backend, celery) inherit. The image is powered by **Python 3.9** on a minimal version of Debian (`bullseye-slim`).
 
-W docelowym `Dockerfile` dla nowej aplikacji wystarczy użyć dyrektywy:
+In the target `Dockerfile` for the new application, simply use the following directive:
 
 ```dockerfile
 FROM dawidkonarczak/greatspn-for-kitapena:latest
 ```
 
-Aby zbudować i nadpisać obraz lokalnie po wprowadzonych tu poprawkach skryptów, użyj standardowej komendy:
+To build and overwrite the image locally after making script adjustments here, use the standard command:
 ```bash
 docker build -t dawidkonarczak/greatspn-for-kitapena:latest .
 ```
 
-Aby przetestować uruchomienie gołych narzędzi w terminalu:
+To test running the bare tools in the terminal:
 ```bash
 docker run -it --rm dawidkonarczak/greatspn-for-kitapena:latest bash
 ```

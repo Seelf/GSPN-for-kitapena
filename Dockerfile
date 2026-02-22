@@ -1,7 +1,7 @@
-# ETAP 1: Budowanie GreatSPN na bazie Debiana
+# STAGE 1: Build GreatSPN based on Debian
 FROM debian:bullseye-slim AS builder
 
-# Instalacja narzędzi budowania i bibliotek
+# Install build tools and libraries
 RUN apt-get update && apt-get install -y \
     gcc g++ make autoconf automake libtool flex bison byacc cmake git wget zip \
     ant default-jdk \
@@ -11,25 +11,25 @@ RUN apt-get update && apt-get install -y \
 
 ENV JAVA_HOME=/usr/lib/jvm/default-java
 ENV MAKE_ARGS=-j4
-# Ustawiamy ścieżki include i bibliotek jako zmienne ENV, aby były widoczne dla wszystkich procesów
+# Set include and library paths as ENV variables, so they are visible to all processes
 ENV CPLUS_INCLUDE_PATH=/usr/local/include
 ENV LIBRARY_PATH=/usr/local/lib
 WORKDIR /build
 
-# 1. Meddly (Używamy stabilnego commitu z lutego 2024 zgodnego z GreatSPN)
+# 1. Meddly (using a stable commit from February 2024 compatible with GreatSPN)
 RUN git clone https://github.com/asminer/meddly.git meddly && \
     cd meddly && \
     git checkout c55b7e96b0f353dd9fec39aa2a6970a340d97cb1 && \
     ./autogen.sh && ./configure --prefix=/usr/local && \
     make ${MAKE_ARGS} && make install
 
-# 2. SPOT (Wersja 2.9.6)
+# 2. SPOT (Version 2.9.6)
 RUN wget http://www.lrde.epita.fr/dload/spot/spot-2.9.6.tar.gz && \
     tar xzf spot-2.9.6.tar.gz && cd spot-2.9.6 && \
     ./configure --disable-python --disable-debug && \
     make ${MAKE_ARGS} && make install
 
-# 3. OGDF (Wersja Dogwood-202202)
+# 3. OGDF (Version Dogwood-202202)
 RUN git clone https://github.com/ogdf/ogdf && \
     cd ogdf && \
     git checkout dogwood-202202 && \
@@ -47,7 +47,7 @@ RUN wget https://datacloud.di.unito.it/index.php/s/JFsJwyHfJ9FNWZJ/download/lp_s
 RUN git clone https://github.com/greatspn/SOURCES.git GreatSPN_SOURCES && \
     cd GreatSPN_SOURCES && \
     export MULTIARCH=$(gcc -print-multiarch) && \
-    # Ustawiamy ścieżki kompilatora
+    # Set compiler paths
     # Export paths and variables explicitly for both make and make install
     export CPLUS_INCLUDE_PATH=/usr/local/include && \
     export LIBRARY_PATH=/usr/local/lib:/usr/lib/$MULTIARCH && \
@@ -66,7 +66,7 @@ RUN git clone https://github.com/greatspn/SOURCES.git GreatSPN_SOURCES && \
     make ${MAKE_ARGS} && \
     make install
 
-# ETAP 2: Docelowy obraz (Python slim)
+# STAGE 2: Target image (Python slim)
 FROM python:3.9-slim
 
 RUN apt-get update && apt-get install -y \
